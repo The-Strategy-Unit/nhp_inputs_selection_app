@@ -243,6 +243,14 @@ is_local <- function() {
   Sys.getenv("SHINY_PORT") == "" || !getOption("golem.app.prod", TRUE)
 }
 
+format_nhs_trust_name <- function(name) {
+  name |>
+    stringr::str_to_title() |>
+    stringr::str_replace_all("Nhs", "NHS") |>
+    stringr::str_replace_all("And", "and")
+}
+
+
 ## PEERS ----
 
 peers_table <- function(selected_peers) {
@@ -562,18 +570,22 @@ ui <- bs4Dash::bs4DashPage(
   dark = NULL
 )
 
-
 server <- function(input, output, session) {
   # static data ----
   peers <- readRDS("peers.Rds")
 
-  providers <- readRDS("providers.Rds")
-  all_providers <- jsonlite::read_json(
-    "all_providers.json",
-    simplifyVector = TRUE
-  )
-
   provider_locations <- sf::read_sf("provider_locations.geojson")
+  providers <- provider_locations |>
+    sf::st_drop_geometry() |>
+    dplyr::mutate(
+      dplyr::across("name", format_nhs_trust_name)
+    ) |>
+    dplyr::transmute(
+      name = paste0(.data[["name"]], " (", .data[["org_id"]], ")"),
+      org_id = .data[["org_id"]]
+    ) |>
+    dplyr::arrange(.data[["name"]]) |>
+    tibble::deframe()
 
   # reactives ----
 
@@ -593,16 +605,15 @@ server <- function(input, output, session) {
   selected_providers <- shiny::reactive({
     g <- session$groups
 
-    p <- all_providers
-
-    if (!(is.null(g) || any(c("nhp_devs", "nhp_power_users") %in% g))) {
-      a <- g |>
-        stringr::str_subset("^nhp_provider_") |>
-        stringr::str_remove("^nhp_provider_")
-      p <- intersect(p, a)
+    if ((is.null(g) || any(c("nhp_devs", "nhp_power_users") %in% g))) {
+      return(providers)
     }
 
-    p <- providers[providers %in% p]
+    a <- g |>
+      stringr::str_subset("^nhp_provider_") |>
+      stringr::str_remove("^nhp_provider_")
+
+    intersect(providers, a)
   })
 
   # when the user changes the provider (dataset), get the list of peers for that provider
