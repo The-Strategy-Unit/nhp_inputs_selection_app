@@ -578,17 +578,18 @@ server <- function(input, output, session) {
   # only show the providers that a user is allowed to access
   selected_providers <- shiny::reactive({
     g <- session$groups
-    p <- tibble::deframe(providers)
+    providers <- tibble::deframe(providers)
 
     if ((is.null(g) || any(c("nhp_devs", "nhp_power_users") %in% g))) {
-      return(p)
+      return(providers)
     }
 
     a <- g |>
       stringr::str_subset("^nhp_provider_") |>
       stringr::str_remove("^nhp_provider_")
 
-    intersect(p, a)
+    p <- intersect(providers, a)
+    providers[providers %in% p]
   })
 
   # when the user changes the provider (dataset), get the list of peers for that provider
