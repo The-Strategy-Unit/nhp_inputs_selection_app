@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // the providersGeojson contains all the providers, we filter it to only include the current
-    // provider and it's peers
+    // provider and its peers
     const filteredFeatures = providersGeojson.features.filter((feature) => {
       // check that shiny has sent the peers to filter to. if it hasn't yet, don't show any points
       if (!selectedOrgIds || selectedOrgIds.size === 0) {
@@ -76,12 +76,12 @@ document.addEventListener('DOMContentLoaded', function () {
     ).addTo(map);
   }
 
-  // asynchronously load the providers.geojson file and store it in the providersGeojson variable.
-  // once loaded, call renderProvidersLayer to display the points on the map.
+  // asynchronously load the provider_locations.geojson file and store it in the providersGeojson
+  // variable. once loaded, call renderProvidersLayer to display the points on the map.
   fetch('provider_locations.geojson')
     .then((response) => {
       if (!response.ok) {
-        throw new Error('Failed to load providers.geojson');
+        throw new Error('Failed to load provider_locations.geojson');
       }
       return response.json();
     })
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function () {
       renderProvidersLayer();
     })
     .catch((error) => {
-      console.error('Error loading providers.geojson:', error);
+      console.error('Error loading provider_locations.geojson:', error);
     });
 
   // listen for messages from shiny containing the selected peers. when received, store the org_ids
