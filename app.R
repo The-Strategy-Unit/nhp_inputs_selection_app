@@ -227,20 +227,9 @@ params_filename <- function(user, dataset, scenario) {
 
 # APP HELPERS ----
 
-# until https://github.com/posit-dev/air/issues/256 is resolved, use nolint start/end
-# nolint start
-"%||%" <- function(x, y) {
-  if (is.null(x)) {
-    y
-  } else {
-    x
-  }
-}
-# nolint end
-
 # check to see whether the app is running locally or in production
 is_local <- function() {
-  Sys.getenv("SHINY_PORT") == "" || !getOption("golem.app.prod", TRUE)
+  Sys.getenv("POSIT_PRODUCT") != "CONNECT"
 }
 
 format_nhs_trust_name <- function(name) {
@@ -509,23 +498,9 @@ ui_body <- function() {
     bs4Dash::box(
       title = "Map of Selected Provider and Peers",
       width = 12,
-
       shiny::tags$div(
-        shiny::tags$link(
-          rel = "stylesheet",
-          href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        ),
-
-        shiny::tags$script(
-          src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        ),
-
-        shiny::tags$div(
-          id = "provider_peers_map",
-          style = "height:730px;"
-        ),
-
-        shiny::tags$script(src = "map.js")
+        id = "provider_peers_map",
+        style = "height:730px;"
       )
     ),
     bs4Dash::box(
@@ -549,12 +524,26 @@ ui_body <- function() {
   )
 }
 
-ui <- bs4Dash::bs4DashPage(
-  bs4Dash::dashboardHeader(disable = TRUE),
-  bs4Dash::dashboardSidebar(disable = TRUE),
-  ui_body(),
-  help = NULL,
-  dark = NULL
+ui <- shiny::tagList(
+  shiny::tags$head(
+    shiny::tags$title("NHP: Inputs Selection"),
+    shinyjs::useShinyjs(),
+    shiny::tags$link(
+      rel = "stylesheet",
+      href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    ),
+    shiny::tags$script(
+      src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    ),
+    shiny::tags$script(src = "map.js")
+  ),
+  bs4Dash::bs4DashPage(
+    bs4Dash::dashboardHeader(disable = TRUE),
+    bs4Dash::dashboardSidebar(disable = TRUE),
+    ui_body(),
+    help = NULL,
+    dark = NULL
+  )
 )
 
 server <- function(input, output, session) {
@@ -979,13 +968,4 @@ server <- function(input, output, session) {
   NULL
 }
 
-shiny::shinyApp(
-  shiny::tagList(
-    shiny::tags$head(
-      shiny::tags$title("NHP: Inputs Selection")
-    ),
-    shinyjs::useShinyjs(),
-    ui
-  ),
-  server
-)
+shiny::shinyApp(ui, server)
