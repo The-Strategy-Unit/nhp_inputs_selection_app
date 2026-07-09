@@ -17,14 +17,12 @@ deploy <- function(server, app_id, app_version_choices) {
   )
 
   files <- c(
-    dir(".", ".R"),
-    dir(".", ".yml"),
-    dir(".", "*.json"),
-    dir(".", "*.Rds"),
-    dir(".", "*.md")
+    "DESCRIPTION",
+    "NAMESPACE",
+    "app.R",
+    fs::dir_ls("R"),
+    fs::dir_ls("inst", recurse = TRUE, type = "file")
   )
-
-  files <- files[!files == "deploy.R"]
 
   withr::local_envvar(
     APP_VERSION_CHOICES = jsonlite::toJSON(
