@@ -287,10 +287,10 @@ app_server <- function(input, output, session) {
     if (input$selected_user != current_user()) {
       shinyjs::disable("scenario_type")
 
-      shiny::updateCheckboxInput(
+      shiny::updateRadioButtons(
         session,
         "scenario_type",
-        value = "Create new from existing"
+        selected = "Create new from existing"
       )
     }
 
