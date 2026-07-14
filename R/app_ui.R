@@ -1,3 +1,22 @@
+use_leafletjs <- function() {
+  htmltools::htmlDependency(
+    name = "leaflet",
+    version = "1.9.4",
+    src = c(href = "https://unpkg.com/leaflet@1.9.4/dist"),
+    script = "leaflet.js",
+    stylesheet = "leaflet.css"
+  )
+}
+
+map_dependency <- function() {
+  htmltools::htmlDependency(
+    name = "map",
+    version = "1.0.0",
+    src = c(file = app_sys("www")),
+    script = "map.js"
+  )
+}
+
 app_ui <- function(request) {
   shiny::addResourcePath(
     "www",
@@ -8,14 +27,8 @@ app_ui <- function(request) {
     shiny::tags$head(
       shiny::tags$title("NHP: Inputs Selection"),
       shinyjs::useShinyjs(),
-      shiny::tags$link(
-        rel = "stylesheet",
-        href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-      ),
-      shiny::tags$script(
-        src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-      ),
-      shiny::tags$script(src = "www/map.js")
+      use_leafletjs(),
+      map_dependency()
     ),
     bs4Dash::bs4DashPage(
       bs4Dash::dashboardHeader(disable = TRUE),
