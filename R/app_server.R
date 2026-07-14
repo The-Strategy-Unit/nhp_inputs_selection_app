@@ -210,7 +210,7 @@ app_server <- function(input, output, session) {
     shiny::updateSelectInput(
       session,
       "end_year",
-      selected = as.character(p$end_year)
+      selected = as.character(selected_end_year)
     )
     shiny::updateNumericInput(session, "seed", value = p$seed)
     shiny::updateSelectInput(session, "model_runs", selected = p$model_runs)
