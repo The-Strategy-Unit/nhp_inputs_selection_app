@@ -100,7 +100,7 @@ ui_body <- function() {
             "detailed baseline data&body=I am requesting the detailed ",
             "baseline data for [scheme name] for financial year [YYYY/YY], as ",
             "instructed in the NHP inputs app."
-          ),
+          )
         ),
         "and review it before you run the model."
       ),
