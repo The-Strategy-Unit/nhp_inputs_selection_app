@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // asynchronously load the provider_locations.geojson file and store it in the providersGeojson
   // variable. once loaded, call renderProvidersLayer to display the points on the map.
-  fetch('provider_locations.geojson')
+  fetch('www/provider_locations.geojson')
     .then((response) => {
       if (!response.ok) {
         throw new Error('Failed to load provider_locations.geojson');

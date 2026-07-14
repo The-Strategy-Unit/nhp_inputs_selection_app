@@ -1,0 +1,34 @@
+Package: nhp.inputs.selection.app
+Title: NHP Inputs Selection App
+Version: 0.0.0.9000
+Authors@R: c(
+    person("Tom", "Jemmett", , "thomas.jemmett@nhs.net", role = c("cre", "aut")),
+    person("Matt", "Dray", , "matt.dray@nhs.net", role = "aut"),
+    person("Gabriel", "Hobro", role = "ctb"),
+    person("YiWen", "Hon", role = "ctb"),
+    person("Claire", "Welsh", role = "ctb")
+  )
+Description: A shiny app for starting the NHP inputs app.
+License: MIT + file LICENSE
+Depends:
+    R (>= 4.4.0)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 8.0.0
+Imports: 
+    bs4Dash,
+    config,
+    dplyr,
+    glue,
+    gt,
+    htmltools,
+    jsonlite,
+    markdown,
+    purrr,
+    rlang,
+    shiny,
+    shinycssloaders,
+    shinyjs,
+    stringr,
+    tibble,
+    yyjsonr
