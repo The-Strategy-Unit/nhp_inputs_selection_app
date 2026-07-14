@@ -227,57 +227,26 @@ params_filename <- function(user, dataset, scenario) {
 
 # APP HELPERS ----
 
-# until https://github.com/posit-dev/air/issues/256 is resolved, use nolint start/end
-# nolint start
-"%||%" <- function(x, y) {
-  if (is.null(x)) {
-    y
-  } else {
-    x
-  }
-}
-# nolint end
-
 # check to see whether the app is running locally or in production
 is_local <- function() {
-  Sys.getenv("SHINY_PORT") == "" || !getOption("golem.app.prod", TRUE)
+  Sys.getenv("POSIT_PRODUCT") != "CONNECT"
 }
+
+format_nhs_trust_name <- function(name) {
+  name |>
+    stringr::str_to_title() |>
+    stringr::str_replace_all("Nhs", "NHS") |>
+    stringr::str_replace_all("And", "and")
+}
+
 
 ## PEERS ----
 
 peers_table <- function(selected_peers) {
   selected_peers |>
-    sf::st_drop_geometry() |>
     dplyr::filter(.data$is_peer) |>
     dplyr::select("ODS Code" = "org_id", "Trust" = "name") |>
     gt::gt()
-}
-
-providers_map <- function(selected_peers) {
-  peer_marker <- leaflet::makeAwesomeIcon(
-    icon = "medkit",
-    library = "fa",
-    markerColor = "blue"
-  )
-  provider_marker <- leaflet::makeAwesomeIcon(
-    icon = "medkit",
-    library = "fa",
-    markerColor = "orange"
-  )
-
-  selected_peers |>
-    leaflet::leaflet() |>
-    leaflet::addProviderTiles("CartoDB.Positron") |>
-    leaflet::addAwesomeMarkers(
-      data = dplyr::filter(selected_peers, .data$is_peer),
-      icon = peer_marker,
-      popup = ~name
-    ) |>
-    leaflet::addAwesomeMarkers(
-      data = dplyr::filter(selected_peers, !.data$is_peer),
-      icon = provider_marker,
-      popup = ~name
-    )
 }
 
 ## YEARS ----
@@ -529,8 +498,9 @@ ui_body <- function() {
     bs4Dash::box(
       title = "Map of Selected Provider and Peers",
       width = 12,
-      shinycssloaders::withSpinner(
-        leaflet::leafletOutput("providers_map", height = "730px")
+      shiny::tags$div(
+        id = "provider_peers_map",
+        style = "height:730px;"
       )
     ),
     bs4Dash::box(
@@ -538,7 +508,7 @@ ui_body <- function() {
       width = 12,
       collapsed = TRUE,
       shinycssloaders::withSpinner(
-        gt::gt_output("peers_list")
+        shiny::htmlOutput("peers_list")
       )
     )
   )
@@ -554,26 +524,42 @@ ui_body <- function() {
   )
 }
 
-ui <- bs4Dash::bs4DashPage(
-  bs4Dash::dashboardHeader(disable = TRUE),
-  bs4Dash::dashboardSidebar(disable = TRUE),
-  ui_body(),
-  help = NULL,
-  dark = NULL
+ui <- shiny::tagList(
+  shiny::tags$head(
+    shiny::tags$title("NHP: Inputs Selection"),
+    shinyjs::useShinyjs(),
+    shiny::tags$link(
+      rel = "stylesheet",
+      href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    ),
+    shiny::tags$script(
+      src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    ),
+    shiny::tags$script(src = "map.js")
+  ),
+  bs4Dash::bs4DashPage(
+    bs4Dash::dashboardHeader(disable = TRUE),
+    bs4Dash::dashboardSidebar(disable = TRUE),
+    ui_body(),
+    help = NULL,
+    dark = NULL
+  )
 )
-
 
 server <- function(input, output, session) {
   # static data ----
   peers <- readRDS("peers.Rds")
 
-  providers <- readRDS("providers.Rds")
-  all_providers <- jsonlite::read_json(
-    "all_providers.json",
-    simplifyVector = TRUE
-  )
-
-  provider_locations <- sf::read_sf("provider_locations.geojson")
+  providers <- yyjsonr::read_geojson_file("www/provider_locations.geojson") |>
+    as.data.frame() |>
+    dplyr::mutate(
+      dplyr::across("name", format_nhs_trust_name)
+    ) |>
+    dplyr::transmute(
+      name = paste0(.data[["name"]], " (", .data[["org_id"]], ")"),
+      org_id = .data[["org_id"]]
+    ) |>
+    dplyr::arrange(.data[["name"]])
 
   # reactives ----
 
@@ -592,24 +578,25 @@ server <- function(input, output, session) {
   # only show the providers that a user is allowed to access
   selected_providers <- shiny::reactive({
     g <- session$groups
+    providers <- tibble::deframe(providers)
 
-    p <- all_providers
-
-    if (!(is.null(g) || any(c("nhp_devs", "nhp_power_users") %in% g))) {
-      a <- g |>
-        stringr::str_subset("^nhp_provider_") |>
-        stringr::str_remove("^nhp_provider_")
-      p <- intersect(p, a)
+    if ((is.null(g) || any(c("nhp_devs", "nhp_power_users") %in% g))) {
+      return(providers)
     }
 
-    p <- providers[providers %in% p]
+    a <- g |>
+      stringr::str_subset("^nhp_provider_") |>
+      stringr::str_remove("^nhp_provider_")
+
+    p <- intersect(providers, a)
+    providers[providers %in% p]
   })
 
   # when the user changes the provider (dataset), get the list of peers for that provider
   selected_peers <- shiny::reactive({
     p <- shiny::req(input$dataset)
 
-    provider_locations |>
+    providers |>
       dplyr::semi_join(
         peers |>
           dplyr::filter(.data$procode == p),
@@ -618,6 +605,15 @@ server <- function(input, output, session) {
       dplyr::mutate(is_peer = .data$org_id != p)
   }) |>
     shiny::bindEvent(input$dataset)
+
+  shiny::observe({
+    peers <- shiny::req(selected_peers()) |>
+      _[["org_id"]] |>
+      unique()
+
+    session$sendCustomMessage("selectedPeersUpdate", peers)
+  }) |>
+    shiny::bindEvent(selected_peers())
 
   # the scenario must have some validation applied to it - the next few chunks handle this
   scenario_validation <- shiny::reactive({
@@ -942,13 +938,11 @@ server <- function(input, output, session) {
     shiny::bindEvent(input$scenario_type)
 
   # renders ----
-  output$peers_list <- gt::render_gt({
-    peers_table(selected_peers())
-  })
-
-  output$providers_map <- leaflet::renderLeaflet({
-    shiny::req(selected_peers())
-    providers_map(selected_peers())
+  output$peers_list <- shiny::renderUI({
+    selected_peers() |>
+      peers_table() |>
+      gt::as_raw_html() |>
+      shiny::HTML()
   })
 
   output$start_button <- shiny::renderUI({
@@ -975,13 +969,4 @@ server <- function(input, output, session) {
   NULL
 }
 
-shiny::shinyApp(
-  shiny::tagList(
-    shiny::tags$head(
-      shiny::tags$title("NHP: Inputs Selection")
-    ),
-    shinyjs::useShinyjs(),
-    ui
-  ),
-  server
-)
+shiny::shinyApp(ui, server)
