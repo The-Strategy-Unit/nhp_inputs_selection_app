@@ -1,0 +1,83 @@
+name: "Connect Publish (manual)"
+on:
+  workflow_dispatch:
+    inputs:
+      app:
+        required: true
+        type: string
+      environment:
+        description: "The environment to deploy to"
+        required: true
+        type: string
+        default: "development"
+  workflow_call:
+    inputs:
+      app:
+        required: true
+        type: string
+      environment:
+        description: "The environment to deploy to"
+        required: true
+        type: string
+
+jobs:
+  connect-publish:
+    name: "Connect Publish: [${{ inputs.environment }}]"
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.environment }}
+      url: ${{ vars.RSCONNECT_URL }}nhp/${{ inputs.app }}
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: r-lib/actions/setup-r@v2
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          cache-version: 1
+          extra-packages: |
+            any::rsconnect
+            any::cpp11
+            any::fs
+            any::progress
+
+      - name: Generate manifest
+        run: Rscript dev/generate_manifest.R
+
+      - name: Upload manifest
+        uses: actions/upload-artifact@v7
+        with:
+          name: manifest
+          path: manifest.json
+
+      - name: Get inputs app versions
+        id: app_versions
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          versions=$(gh api "repos/The-Strategy-Unit/nhp_inputs/releases" --jq '.[].tag_name' \
+            | sed -E 's/^(v[0-9]+\.[0-9]+)\..*/\1/' \
+            | sort -Vur \
+            | awk -F '[v.]' '$2 > 3 || ($2 == 3 && $3 >= 3)' \
+            | jq -Rsc 'split("\n")[:-1] + ["dev"]')
+
+          echo "versions=$versions" >> "$GITHUB_OUTPUT"
+
+      - name: Publish Connect content
+        uses: rstudio/actions/connect-publish@main
+        env:
+          CONNECT_ENV_SET_GOLEM_CONFIG_ACTIVE: "production"
+          CONNECT_ENV_SET_APP_VERSION_CHOICES: ${{ steps.app_versions.outputs.versions }}
+          CONNECT_ENV_SET_YEAR_HORIZON_DEFAULT: ${{ vars.YEAR_HORIZON_DEFAULT }}
+          CONNECT_ENV_SET_YEAR_HORIZON_MAX: ${{ vars.YEAR_HORIZON_MAX }}
+          CONNECT_ENV_SET_YEAR_BASELINE_DEFAULT: ${{ vars.YEAR_BASELINE_DEFAULT }}
+          CONNECT_ENV_SET_YEAR_BASELINE_MIN: ${{ vars.YEAR_BASELINE_MIN }}
+        with:
+          url: ${{ vars.RSCONNECT_URL }}
+          api-key: ${{ secrets.RSCONNECT_API_KEY }}
+          access-type: logged_in
+          force: true
+          dir: .:${{ inputs.app }}
+          namespace: nhp
