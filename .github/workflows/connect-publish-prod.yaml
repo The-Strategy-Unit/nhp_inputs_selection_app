@@ -1,0 +1,13 @@
+name: "Connect Publish (prod)"
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish-production:
+    name: "Publish (to production)"
+    uses: ./.github/workflows/connect-publish-manual.yaml
+    with:
+      app: inputs
+      environment: "production"
+    secrets: inherit
