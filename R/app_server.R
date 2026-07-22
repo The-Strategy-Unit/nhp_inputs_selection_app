@@ -57,14 +57,14 @@ app_server <- function(input, output, session) {
     p <- shiny::req(input$dataset)
 
     providers |>
-      dplyr::filter(.data$org_id %in% c(p, peers[[p]])) |>
-      dplyr::mutate(is_peer = .data$org_id != p)
+      dplyr::filter(.data[["org_id"]] %in% c(p, peers[[p]])) |>
+      dplyr::mutate(is_peer = .data[["org_id"]] != p)
   }) |>
     shiny::bindEvent(input$dataset)
 
   shiny::observe({
     peers <- shiny::req(selected_peers()) |>
-      dplyr::pull(.data[["org_id"]]) |>
+      dplyr::pull("org_id") |>
       unique()
 
     session$sendCustomMessage("selectedPeersUpdate", peers)
