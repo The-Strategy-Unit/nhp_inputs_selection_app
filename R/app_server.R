@@ -1,6 +1,9 @@
 app_server <- function(input, output, session) {
   # static data ----
-  peers <- readRDS(app_sys("peers.Rds"))
+  peers <- yyjsonr::read_json_file(
+    app_sys("peers.json"),
+    obj_of_arrs_to_df = FALSE
+  )
 
   providers <- yyjsonr::read_geojson_file(app_sys(
     "www/provider_locations.geojson"
@@ -54,18 +57,14 @@ app_server <- function(input, output, session) {
     p <- shiny::req(input$dataset)
 
     providers |>
-      dplyr::semi_join(
-        peers |>
-          dplyr::filter(.data$procode == p),
-        by = c("org_id" = "peer")
-      ) |>
+      dplyr::filter(.data$org_id %in% c(p, peers[[p]])) |>
       dplyr::mutate(is_peer = .data$org_id != p)
   }) |>
     shiny::bindEvent(input$dataset)
 
   shiny::observe({
     peers <- shiny::req(selected_peers()) |>
-      _[["org_id"]] |>
+      dplyr::pull(.data[["org_id"]]) |>
       unique()
 
     session$sendCustomMessage("selectedPeersUpdate", peers)
