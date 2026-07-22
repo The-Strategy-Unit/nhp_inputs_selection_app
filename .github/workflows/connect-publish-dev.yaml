@@ -1,0 +1,14 @@
+name: "Connect Publish (dev)"
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  publish-dev:
+    name: "Publish (to development)"
+    uses: ./.github/workflows/connect-publish-manual.yaml
+    with:
+      app: "inputs_dev"
+      environment: "development"
+    secrets: inherit
