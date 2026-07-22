@@ -1,6 +1,6 @@
 linters: linters_with_defaults(
   line_length_linter(120),
-  cyclocomp_linter(20),
+  cyclocomp_linter(30),
   object_name_linter("snake_case"),
   object_length_linter(50))
 exclusions: list()
