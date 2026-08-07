@@ -430,6 +430,10 @@ app_server <- function(input, output, session) {
       button_text <- "View Progress"
     } else {
       f <- tempfile_name()
+      if (input$scenario_type == "Create new from existing") {
+        # remove existing inputs app metadata
+        p[["__inputs_app__"]] <- NULL
+      }
       # go to the inputs app
       jsonlite::write_json(p, f, pretty = TRUE, auto_unbox = TRUE)
 
