@@ -27,6 +27,7 @@ Imports:
     markdown,
     purrr,
     rlang,
+    sass,
     shiny,
     shinycssloaders,
     shinyjs,
