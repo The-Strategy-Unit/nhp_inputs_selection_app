@@ -305,7 +305,7 @@ ui_body <- function() {
   )
 
   navbar <- shiny::tags$nav(
-    class = "navbar navbar-expand-lg navbar-light bg-primary",
+    class = "navbar navbar-expand-lg bg-primary",
     htmltools::tags$div(
       class = "navbar-brand",
       htmltools::h1("NHP Model Inputs", id = "page-title")
