@@ -312,7 +312,7 @@ ui_body <- function() {
     )
   )
 
-  theme <- suppressWarnings(ui_theme())
+  theme <- ui_theme()
 
   # build the home page outputs
   shiny::tags$div(
