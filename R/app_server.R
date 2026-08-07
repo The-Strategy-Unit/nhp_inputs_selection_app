@@ -1,3 +1,4 @@
+# nolint next: cyclocomp_linter.
 app_server <- function(input, output, session) {
   # static data ----
   peers <- readRDS(app_sys("peers.Rds"))
