@@ -425,10 +425,14 @@ app_server <- function(input, output, session) {
         utils::URLencode(basename(f))
       )
 
-      shiny::tags$a(
-        "Start",
-        class = "btn btn-primary",
-        href = url
+      bslib::layout_columns(
+        col_widths = c(9, 3),
+        shiny::tags$span(),
+        shiny::tags$a(
+          "Start",
+          class = "btn btn-success text-white",
+          href = url
+        )
       )
     }
   }) |>
