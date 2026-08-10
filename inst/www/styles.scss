@@ -1,0 +1,14 @@
+.navbar {
+  margin-bottom: 2rem;
+
+  h1 {
+    color: $white;
+  }
+}
+
+.card-header {
+  .btn-link {
+    color: $white !important;
+    font-weight: var(--bslib-dashboard-card-header-font-weight);
+  }
+}

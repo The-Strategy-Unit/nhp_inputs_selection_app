@@ -1,3 +1,4 @@
+# nolint next: cyclocomp_linter.
 app_server <- function(input, output, session) {
   # static data ----
   peers <- readRDS(app_sys("peers.Rds"))
@@ -166,11 +167,12 @@ app_server <- function(input, output, session) {
       unique() |>
       sort()
 
-    shiny::updateSelectInput(
+    shiny::updateSelectizeInput(
       session,
       "selected_user",
       choices = users,
-      selected = current_user()
+      selected = current_user(),
+      server = FALSE
     )
   })
 
@@ -214,7 +216,12 @@ app_server <- function(input, output, session) {
     )
     shiny::updateNumericInput(session, "seed", value = p$seed)
     shiny::updateSelectInput(session, "model_runs", selected = p$model_runs)
-    shiny::updateSelectInput(session, "app_version", selected = p$app_version)
+    shiny::updateSelectizeInput(
+      session,
+      "app_version",
+      selected = p$app_version,
+      server = FALSE
+    )
   }) |>
     shiny::bindEvent(params())
 
@@ -385,10 +392,11 @@ app_server <- function(input, output, session) {
   # 'create new' radio button should force model version dropdown to latest
   shiny::observe({
     if (input$scenario_type == "Create new from scratch") {
-      shiny::updateSelectInput(
+      shiny::updateSelectizeInput(
         session,
         "app_version",
-        selected = app_version_choices()[1]
+        selected = app_version_choices()[1],
+        server = FALSE
       )
     }
   }) |>
@@ -417,10 +425,14 @@ app_server <- function(input, output, session) {
         utils::URLencode(basename(f))
       )
 
-      shiny::tags$a(
-        "Start",
-        class = "btn btn-success",
-        href = url
+      bslib::layout_columns(
+        col_widths = c(9, 3),
+        shiny::tags$span(),
+        shiny::tags$a(
+          "Start",
+          class = "btn btn-success text-white",
+          href = url
+        )
       )
     }
   }) |>
