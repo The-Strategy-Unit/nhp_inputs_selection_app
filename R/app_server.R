@@ -419,6 +419,7 @@ app_server <- function(input, output, session) {
 
     if (
       input$scenario_type == "Edit existing" &&
+        !is.null(p[["__inputs_app__"]]) &&
         !is.null(p[["__inputs_app__"]][["model_run_id"]])
     ) {
       # go to the model run progress app
