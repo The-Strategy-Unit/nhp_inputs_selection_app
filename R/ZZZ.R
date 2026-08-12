@@ -1,4 +1,4 @@
-#' @importFrom rlang .data .env `!!!`
+#' @importFrom rlang .data .env
 NULL
 
 app_version_choices <- function() {

@@ -21,6 +21,7 @@ S3method(upgrade_params,v5.0)
 S3method(upgrade_params,v5.1)
 export(run_app)
 export(upgrade_params)
-importFrom(rlang,.data)
-importFrom(rlang,.env)
-importFrom(rlang,`!!!`)
+importFrom(rlang,
+  .data,
+  .env
+)
