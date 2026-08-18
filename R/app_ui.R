@@ -332,7 +332,10 @@ ui_body <- function() {
       title = "NHP: Inputs Selection",
       theme = theme,
       bslib::layout_columns(
-        col_widths = c(4, 4, 4),
+        col_widths = bslib::breakpoints(
+          xs = c(12, 12, 12),
+          lg = c(4, 4, 4)
+        ),
         left_column,
         middle_column,
         right_column
