@@ -212,7 +212,10 @@ ui_body <- function() {
             href = "https://connect.strategyunitwm.nhs.uk/nhp/project_information/user_guide/naming_scenarios.html"
           ),
         ),
-        shiny::uiOutput("start_button")
+        shiny::div(
+          style = "text-align: right",
+          shiny::uiOutput("start_button")
+        )
       )
     ),
     shiny::div(

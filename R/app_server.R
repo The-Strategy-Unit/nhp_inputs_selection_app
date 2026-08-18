@@ -450,14 +450,10 @@ app_server <- function(input, output, session) {
       button_text <- "Start"
     }
 
-    bslib::layout_columns(
-      col_widths = c(9, 3),
-      shiny::tags$span(),
-      shiny::tags$a(
-        button_text,
-        class = "btn btn-success text-white",
-        href = url
-      )
+    shiny::tags$a(
+      button_text,
+      class = "btn btn-success text-white",
+      href = url
     )
   }) |>
     shiny::bindEvent(filename(), params_with_inputs())
