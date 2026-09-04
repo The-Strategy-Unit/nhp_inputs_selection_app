@@ -8,12 +8,17 @@ use_leafletjs <- function() {
   )
 }
 
-map_dependency <- function() {
+map_dependency <- function(carto_api_key = NULL) {
   htmltools::htmlDependency(
     name = "map",
     version = "1.0.0",
     src = c(file = app_sys("www")),
-    script = "map.js"
+    script = "map.js",
+    head = if (!is.null(carto_api_key)) {
+      HTML(glue::glue(
+        '<script>window.CARTO_API_KEY = "{carto_api_key}";</script>'
+      ))
+    }
   )
 }
 
@@ -23,11 +28,13 @@ app_ui <- function(request) {
     app_sys("www")
   )
 
+  carto_api_key <- Sys.getenv("CARTO_API_KEY")
+
   shiny::tagList(
     shiny::tags$head(
       shinyjs::useShinyjs(),
       use_leafletjs(),
-      map_dependency()
+      map_dependency(carto_api_key)
     ),
     ui_body()
   )
