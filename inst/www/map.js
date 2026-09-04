@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Add a tile layer to the map (using Carto's light basemap)
   L.tileLayer(
-    'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+    `https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png?key=${window.CARTO_API_KEY}`,
     {
       subdomains: 'abcd',
       maxZoom: 10,
