@@ -29,6 +29,7 @@ deploy <- function(server, app_id, app_version_choices) {
       app_version_choices,
       auto_unbox = TRUE
     ),
+    CARTO_API_KEY = get_env_var("CARTO_API_KEY"),
     R_CONFIG_ACTIVE = "production",
     YEAR_HORIZON_MAX = get_env_var("YEAR_HORIZON_MAX"),
     YEAR_HORIZON_DEFAULT = get_env_var("YEAR_HORIZON_DEFAULT"),
@@ -44,6 +45,7 @@ deploy <- function(server, app_id, app_version_choices) {
     appTitle = "NHP: Inputs Selection",
     envVars = c(
       "APP_VERSION_CHOICES",
+      "CARTO_API_KEY",
       "R_CONFIG_ACTIVE",
       "YEAR_HORIZON_DEFAULT",
       "YEAR_HORIZON_MAX",
