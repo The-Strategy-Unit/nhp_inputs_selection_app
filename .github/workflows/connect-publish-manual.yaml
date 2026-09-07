@@ -57,10 +57,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          # ensure that we only include versions >= 5.0
           versions=$(gh api "repos/The-Strategy-Unit/nhp_inputs/releases" --jq '.[].tag_name' \
             | sed -E 's/^(v[0-9]+\.[0-9]+)\..*/\1/' \
             | sort -Vur \
-            # ensure that we only include versions >= 5.0
             | awk -F '[v.]' '$2 > 5 || ($2 == 5 && $3 >= 0)' \
             | jq -Rsc 'split("\n")[:-1] + ["dev"]')
 
