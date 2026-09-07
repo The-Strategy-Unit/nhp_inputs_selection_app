@@ -7,15 +7,6 @@ get_env_var <- function(env_var) {
 }
 
 deploy <- function(server, app_id, app_version_choices) {
-  if (!file.exists("deploy.R") && dir.exists("inputs_selection_app")) {
-    withr::local_dir("inputs_selection_app")
-  }
-  stopifnot(
-    "Need to run inside the inputs_selection_app folder" = file.exists(
-      "deploy.R"
-    )
-  )
-
   files <- c(
     "DESCRIPTION",
     "NAMESPACE",
@@ -60,15 +51,6 @@ app_version_choices <- c(
   "v5.2",
   "v5.1",
   "v5.0",
-  "v4.4",
-  "v4.3",
-  "v4.2",
-  "v4.1",
-  "v4.0",
-  "v3.6",
-  "v3.5",
-  "v3.4",
-  "v3.3",
   "dev"
 )
 

@@ -339,7 +339,9 @@ ui_body <- function() {
 }
 
 ui_theme <- function() {
-  bslib::bs_theme(brand = app_sys("_brand.yml")) |>
+  brand <- brand.yml::read_brand_yml(app_sys("_brand.yml"))
+
+  bslib::bs_theme(brand = brand) |>
     bslib::bs_add_rules(
       sass::sass_file(app_sys("www/styles.scss"))
     )
