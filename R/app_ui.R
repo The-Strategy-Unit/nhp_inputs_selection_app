@@ -15,7 +15,7 @@ map_dependency <- function(carto_api_key = NULL) {
     src = c(file = app_sys("www")),
     script = "map.js",
     head = if (!is.null(carto_api_key)) {
-      HTML(glue::glue(
+      htmltools::HTML(glue::glue(
         '<script>window.CARTO_API_KEY = "{carto_api_key}";</script>'
       ))
     }
