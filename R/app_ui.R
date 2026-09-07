@@ -212,7 +212,10 @@ ui_body <- function() {
             href = "https://connect.strategyunitwm.nhs.uk/nhp/project_information/user_guide/naming_scenarios.html"
           ),
         ),
-        shiny::uiOutput("start_button")
+        shiny::div(
+          style = "text-align: right",
+          shiny::uiOutput("start_button")
+        )
       )
     ),
     shiny::div(
@@ -329,7 +332,10 @@ ui_body <- function() {
       title = "NHP: Inputs Selection",
       theme = theme,
       bslib::layout_columns(
-        col_widths = c(4, 4, 4),
+        col_widths = bslib::breakpoints(
+          xs = c(12, 12, 12),
+          lg = c(4, 4, 4)
+        ),
         left_column,
         middle_column,
         right_column
