@@ -1,11 +1,14 @@
 default:
   app_url: "http://localhost:8080/"
   params_data_path: "."
+  model_run_progress_url: "http://localhost:8081/"
 
 development:
   app_url: "/nhp/dev/inputs/"
   params_data_path: "/data/nhp/dev/inputs"
+  model_run_progress_url: "/nhp/model_run_progress/"
 
 production:
   app_url: "/nhp/{version}/inputs/"
   params_data_path: "/data/nhp/prod/inputs"
+  model_run_progress_url: "/nhp/model_run_progress/"

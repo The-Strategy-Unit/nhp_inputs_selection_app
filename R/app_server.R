@@ -411,9 +411,31 @@ app_server <- function(input, output, session) {
   })
 
   output$start_button <- shiny::renderUI({
-    if (scenario_validation()) {
+    if (!scenario_validation()) {
+      return(NULL)
+    }
+
+    p <- shiny::req(params_with_inputs())
+
+    if (
+      input$scenario_type == "Edit existing" &&
+        !is.null(p[["__inputs_app__"]]) &&
+        !is.null(p[["__inputs_app__"]][["model_run_id"]])
+    ) {
+      # go to the model run progress app
+      url <- glue::glue(
+        get_config("model_run_progress_url"),
+        "?model_run_id={p[['dataset']]}/{p[['__inputs_app__']][['model_run_id']]}"
+      )
+
+      button_text <- "View Progress"
+    } else {
       f <- tempfile_name()
-      p <- shiny::req(params_with_inputs())
+      if (input$scenario_type == "Create new from existing") {
+        # remove existing inputs app metadata
+        p[["__inputs_app__"]] <- NULL
+      }
+      # go to the inputs app
       jsonlite::write_json(p, f, pretty = TRUE, auto_unbox = TRUE)
 
       # used by the variable in get_config("app_url")
@@ -425,16 +447,18 @@ app_server <- function(input, output, session) {
         utils::URLencode(basename(f))
       )
 
-      bslib::layout_columns(
-        col_widths = c(9, 3),
-        shiny::tags$span(),
-        shiny::tags$a(
-          "Start",
-          class = "btn btn-success text-white",
-          href = url
-        )
-      )
+      button_text <- "Start"
     }
+
+    bslib::layout_columns(
+      col_widths = c(9, 3),
+      shiny::tags$span(),
+      shiny::tags$a(
+        button_text,
+        class = "btn btn-success text-white",
+        href = url
+      )
+    )
   }) |>
     shiny::bindEvent(filename(), params_with_inputs())
 
