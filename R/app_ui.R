@@ -210,7 +210,7 @@ ui_body <- function() {
           shiny::a(
             "the model-run naming guidelines.",
             href = "https://connect.strategyunitwm.nhs.uk/nhp/project_information/user_guide/naming_scenarios.html"
-          ),
+          )
         ),
         shiny::div(
           style = "text-align: right",

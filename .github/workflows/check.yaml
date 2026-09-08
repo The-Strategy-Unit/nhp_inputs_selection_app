@@ -16,24 +16,21 @@ jobs:
           r-version: release
           use-public-rspm: true
 
+      - uses: etiennebacher/setup-jarl@v0.1.1
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         id: setup-deps
         with:
           cache: always
           extra-packages: |
-            any::lintr
             any::cyclocomp
             any::rcmdcheck
             any::devtools
             local::.
 
-      - name: Lint
-        id: lint
+      - name: Run Jarl
         if: ${{ !cancelled() && steps.setup-deps.outcome != 'failure' }}
-        run: lintr::lint_package()
-        shell: Rscript {0}
-        env:
-          LINTR_ERROR_ON_LINT: true
+        run: jarl check .
 
       - uses: r-lib/actions/check-r-package@v2
         if: ${{ !cancelled() && steps.setup-deps.outcome != 'failure' }}
