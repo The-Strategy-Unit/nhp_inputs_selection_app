@@ -16,6 +16,8 @@ jobs:
           r-version: release
           use-public-rspm: true
 
+      - uses: etiennebacher/setup-jarl@v0.1.1
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         id: setup-deps
         with:
@@ -26,12 +28,18 @@ jobs:
             any::devtools
             local::.
 
-      - uses: etiennebacher/setup-jarl@v0.1.1
-        if: ${{ !cancelled() && steps.setup-deps.outcome != 'failure' }}
-
       - name: Run Jarl
         if: ${{ !cancelled() && steps.setup-deps.outcome != 'failure' }}
         run: jarl check .
+
+      - uses: r-lib/actions/check-r-package@v2
+        if: ${{ !cancelled() && steps.setup-deps.outcome != 'failure' }}
+        id: check
+        with:
+          upload-snapshots: true
+          error-on: '"error"'
+        env:
+          _R_CHECK_EXCESSIVE_IMPORTS_: 0
 
       - name: Run devtools::document()
         if: ${{ !cancelled() && steps.setup-deps.outcome != 'failure' }}
