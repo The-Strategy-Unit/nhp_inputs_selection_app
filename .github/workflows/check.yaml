@@ -21,28 +21,10 @@ jobs:
         with:
           cache: always
           extra-packages: |
-            any::lintr
             any::cyclocomp
             any::rcmdcheck
             any::devtools
             local::.
-
-      - name: Lint
-        id: lint
-        if: ${{ !cancelled() && steps.setup-deps.outcome != 'failure' }}
-        run: lintr::lint_package()
-        shell: Rscript {0}
-        env:
-          LINTR_ERROR_ON_LINT: true
-
-      - uses: r-lib/actions/check-r-package@v2
-        if: ${{ !cancelled() && steps.setup-deps.outcome != 'failure' }}
-        id: check
-        with:
-          upload-snapshots: true
-          error-on: '"error"'
-        env:
-          _R_CHECK_EXCESSIVE_IMPORTS_: 0
 
       - name: Run devtools::document()
         if: ${{ !cancelled() && steps.setup-deps.outcome != 'failure' }}
@@ -68,6 +50,18 @@ jobs:
         run: |
           echo "Errors in the workflow"
           exit 1
+
+  jarl-check:
+    name: jarl check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: etiennebacher/setup-jarl@v0.1.1
+
+      - name: Run Jarl
+        run: jarl check .
 
   air-format:
     runs-on: ubuntu-latest
