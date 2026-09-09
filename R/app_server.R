@@ -209,7 +209,7 @@ app_server <- function(input, output, session) {
       selected_end_year <- years[["horizon_max"]]
     }
 
-    shiny::updateSelectInput(
+    shiny::updateSelectizeInput(
       session,
       "end_year",
       selected = as.character(selected_end_year)
@@ -250,7 +250,7 @@ app_server <- function(input, output, session) {
       shiny::req(params())$end_year
     }
 
-    shiny::updateSelectInput(
+    shiny::updateSelectizeInput(
       session,
       "end_year",
       choices = fy_choices,
