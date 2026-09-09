@@ -1,6 +1,6 @@
 <!-- badges: start -->
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![Lint](https://github.com/The-Strategy-Unit/nhp_inputs_selection_app/actions/workflows/check.yaml/badge.svg)](https://github.com/The-Strategy-Unit/nhp_inputs_selection_app/actions/workflows/check.yaml)
+[![Check package](https://github.com/The-Strategy-Unit/nhp_inputs_selection_app/actions/workflows/check.yaml/badge.svg)](https://github.com/The-Strategy-Unit/nhp_inputs_selection_app/actions/workflows/check.yaml)
 <!-- badges: end -->
 
 # nhp_inputs_selection_app
