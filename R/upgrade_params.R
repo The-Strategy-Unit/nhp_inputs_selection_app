@@ -186,3 +186,9 @@ upgrade_params.v5.1 <- function(p) {
   class(p) <- p$app_version <- "v5.2"
   upgrade_params(p)
 }
+
+#' @exportS3Method
+upgrade_params.v5.2 <- function(p) {
+  class(p) <- p$app_version <- "v6.0"
+  upgrade_params(p)
+}
