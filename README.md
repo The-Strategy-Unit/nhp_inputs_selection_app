@@ -3,18 +3,33 @@
 [![Check package](https://github.com/The-Strategy-Unit/nhp_inputs_selection_app/actions/workflows/check.yaml/badge.svg)](https://github.com/The-Strategy-Unit/nhp_inputs_selection_app/actions/workflows/check.yaml)
 <!-- badges: end -->
 
-# nhp_inputs_selection_app
+## About
 
-A Shiny app that sits in front of the NHP Inputs app and helps users:
+A web app to input the parameters needed to run scenarios through the New 
+Hospital Programme (NHP) demand model.
+
+The app is [deployed to Posit Connect](https://connect.strategyunitwm.nhs.uk/nhp/inputs/).
+You must have an account and sufficient permissions to view it.
+
+Results can then be viewed in [the outputs app](https://connect.strategyunitwm.nhs.uk/nhp/outputs/), 
+which is generated from the [nhp_outputs](https://github.com/The-Strategy-Unit/nhp_outputs) repository.
+
+You can find more information on 
+[the NHP model project information site](https://connect.strategyunitwm.nhs.uk/nhp/project_information/), 
+including [a diagram](https://connect.strategyunitwm.nhs.uk/nhp/project_information/project_plan_and_summary/components-overview.html) 
+of how the components of the modelling process fit together.
+
+In this app you can:
 
 - select an existing scenario
 - create a new scenario (from scratch or from an existing one)
 - choose the NHP Inputs model version to open
 - launch into the correct version of the Inputs app with the selected scenario parameters
 
-In practice, this app is the entry point for managing scenario JSON files and routing users to the right NHP Inputs app version.
+This app is the entry point for managing scenario (JSON) files and provides the 
+most recent NHP Inputs app version as a default selection.
 
-## What this app does
+## More detail on the app functionality
 
 The selection app provides a guided workflow to:
 
@@ -32,74 +47,60 @@ The app also:
 - filters available providers by user groups
 - shows a provider/peer map and peers list
 - applies upgrade logic when older scenarios are loaded
-- blocks upgrades for unsupported legacy scenarios (for example older baseline years or certain NDG variants)
+- blocks upgrades for unsupported legacy scenarios (for example older baseline 
+years or certain NDG - non demographic growth - variants)
 
-## Relationship to nhp_inputs
+## For developers
 
-This project does not replace the main Inputs app. It prepares and routes users into it.
+The guidance below is for the members of 
+[the Strategy Unit's Data Science team](https://the-strategy-unit.github.io/data_science/), 
+who built and maintain this app.
 
-- This app writes/loads parameter files.
-- The main `nhp_inputs` app consumes those parameters.
-- The app URL template is environment specific (see configuration below).
+### Structure
 
-## Configuration
+Technically this app routes users to either the most recent version of inputs 
+app or, if selected, a previous version of the inputs app.
 
-Configuration is stored in `inst/config.yml` and loaded via `config::get()`.
+All apps are built with [Shiny](https://shiny.posit.co/).
+Server and UI modules can be found in `R/`, configuration is stored in 
+`inst/config.yml` and loaded via `config::get()`.
+Supporting data and text in `inst/`.
 
-Current keys:
+### Run locally
 
-- `app_url`: target URL pattern for opening the Inputs app
-- `params_data_path`: root location where params and temp files are read/written
+Run the app locally on your machine to test that your changes work as expected.
 
-Environments in this repo:
+#### Setup
 
-- `default`
-- `development`
-- `production`
+First, install the required packages listed in the DESCRIPTION with 
 
-`production.app_url` uses a version placeholder (for example `/nhp/{version}/inputs/`), which is filled from the selected model version.
 
-## Parameter file layout
+```r
+pkgload::load_all(export_all = FALSE, helpers = FALSE, attach_testthat = FALSE)
+```
 
-Parameters are stored under:
+Then add an `.Renviron` file to the project root that contains the required 
+environment variables.
+Copy into it the required variables, which are listed in the `.Renviron.example`.
+You can get the values you need from a member of the Data Science team.
 
-- `{params_data_path}/params/{user}/{dataset}/{scenario}.json`
-
-Temporary launch files are created under:
-
-- `{params_data_path}/tmp/`
-
-The temporary filename is passed to the target Inputs app as a query string parameter.
-
-## Scenario versioning and upgrades
-
-When a saved scenario is loaded:
-
-- the original version is captured as metadata (`prior_app_version`)
-- upgrade steps are applied to move parameters to the latest supported structure
-- UI warnings are shown for meaningful breaking/behavioural changes
-
-Upgrade logic is implemented in `R/upgrade_params.R`.
-
-## Run locally
-
-### Prerequisites
-
-- R >= 4.4.0
-- Package dependencies listed in `DESCRIPTION`
-
-### Start the app
+#### Run the app
 
 From the project root in R:
 
 ```r
-pkgload::load_all(export_all = FALSE, helpers = FALSE, attach_testthat = FALSE)
 run_app()
 ```
 
 Or run `app.R` directly.
 
-## Project structure (high level)
+Making selections in the app will cause values to be written to a local json 
+file, which will live in your local `params/[development]/` directory.
+These scenarios will be selectable and editable in future from your 
+locally-run inputs selection app.
+They will not be available from the deployed app.
+
+## Project structure
 
 - `R/app_ui.R`: UI layout and controls
 - `R/app_server.R`: server logic, scenario validation, routing, and side effects
@@ -111,16 +112,12 @@ Or run `app.R` directly.
 - `inst/home.md`: user-facing guidance shown in the app
 - `inst/www/`: static assets (map JS and provider geojson)
 
-## Deployment notes
+### Deployment
 
-The app is designed for Posit Connect-style environments and uses runtime context (for example user and group information) to control:
+Deployment is controlled by GitHub Actions in `.github/workflows/`, where:
 
-- provider visibility
-- advanced options visibility
-- editable model version/user scope
-
-Deployment helper scripts are in `dev/`.
-
-## Maintainers
-
-See `DESCRIPTION` for package authors and maintainers.
+* pushes to the `main` branch redeploy the app to /nhp/dev/inputs/ for purposes 
+of quality assurance
+* tagged releases trigger a new deployment to /nhp/vX-Y/inputs/, where 'vX-Y' 
+is the current version (note the hyphen)
+* manual deployment is possible with `connect-publish-manual.yaml`
