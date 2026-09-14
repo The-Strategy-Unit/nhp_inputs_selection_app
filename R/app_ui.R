@@ -69,7 +69,6 @@ ui_body <- function() {
           "dataset",
           "Provider",
           choices = NULL,
-          selectize = TRUE,
           width = "100%",
           options = list(dropdownParent = "body")
         ),
