@@ -105,13 +105,14 @@ ui_body <- function() {
           ),
           "and review it before you run the model."
         ),
-        shiny::selectInput(
+        shiny::selectizeInput(
           "end_year",
           "Model Financial Year",
           choices = generate_year_dropdown_choices(
             (years[["baseline_default"]] + 1):years[["horizon_max"]]
           ),
           selected = as.character(years[["horizon_default"]]),
+          options = list(dropdownParent = "body"),
           width = "100%"
         )
       )
