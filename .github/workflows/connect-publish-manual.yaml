@@ -69,7 +69,7 @@ jobs:
       - name: Publish Connect content
         uses: rstudio/actions/connect-publish@main
         env:
-          CONNECT_ENV_SET_GOLEM_CONFIG_ACTIVE: "production"
+          CONNECT_ENV_SET_R_CONFIG_ACTIVE: "production"
           CONNECT_ENV_SET_APP_VERSION_CHOICES: ${{ steps.app_versions.outputs.versions }}
           CONNECT_ENV_SET_YEAR_HORIZON_DEFAULT: ${{ vars.YEAR_HORIZON_DEFAULT }}
           CONNECT_ENV_SET_YEAR_HORIZON_MAX: ${{ vars.YEAR_HORIZON_MAX }}
