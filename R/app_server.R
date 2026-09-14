@@ -81,8 +81,7 @@ app_server <- function(input, output, session) {
     shiny::validate(
       shiny::need(
         s != "",
-        "Scenario name must be completed in order to proceed",
-        "Scenario"
+        FALSE
       ),
       shiny::need(
         !stringr::str_detect(s, "[^a-zA-Z0-9\\-]"),
@@ -99,7 +98,11 @@ app_server <- function(input, output, session) {
     # scenario is valid, so return TRUE. the validate function will return an error if there are issues
     TRUE
   }) |>
-    shiny::bindEvent(input$dataset, input$scenario, input$scenario_type)
+    shiny::bindEvent(
+      input$dataset,
+      input$scenario,
+      input$scenario_type
+    )
 
   # load the selected params
   # if the user chooses to create new from scratch, we use the default parameters file
@@ -402,6 +405,22 @@ app_server <- function(input, output, session) {
   }) |>
     shiny::bindEvent(input$scenario_type)
 
+  output$scenario_warning <- shiny::renderUI({
+    if (
+      !is.null(input$scenario_type) &&
+        (is.null(input$scenario) || trimws(input$scenario) == "")
+    ) {
+      shiny::div(
+        role = "alert",
+        style = paste(
+          "font-weight: 600;",
+          "margin-bottom: 12px;"
+        ),
+        shiny::icon("circle-info"),
+        " Scenario name must be completed in order to proceed"
+      )
+    }
+  })
   # renders ----
   output$peers_list <- shiny::renderUI({
     selected_peers() |>

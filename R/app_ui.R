@@ -122,6 +122,8 @@ ui_body <- function() {
       fill = FALSE,
       bslib::card_header("Scenario", class = "bg-primary"),
       bslib::card_body(
+        shiny::uiOutput("scenario_warning"),
+
         shinyjs::disabled(
           shiny::radioButtons(
             "scenario_type",
