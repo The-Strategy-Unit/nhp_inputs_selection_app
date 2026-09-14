@@ -198,7 +198,7 @@ app_server <- function(input, output, session) {
       y <- p$start_year * 100 + p$start_year %% 100 + 1
       # we don't need to update dataset: the parameters files that are listed in
       # the previous scenario dropdown are already tied to that provider
-      shiny::updateSelectInput(session, "start_year", selected = y)
+      shiny::updateSelectizeInput(session, "start_year", selected = y)
     }
 
     selected_end_year <- p$end_year
@@ -215,7 +215,7 @@ app_server <- function(input, output, session) {
       selected = as.character(selected_end_year)
     )
     shiny::updateNumericInput(session, "seed", value = p$seed)
-    shiny::updateSelectInput(session, "model_runs", selected = p$model_runs)
+    shiny::updateSelectizeInput(session, "model_runs", selected = p$model_runs)
     shiny::updateSelectizeInput(
       session,
       "app_version",
@@ -227,7 +227,7 @@ app_server <- function(input, output, session) {
 
   # update the dataset dropdown when the list of providers changes
   shiny::observe({
-    shiny::updateSelectInput(
+    shiny::updateSelectizeInput(
       session,
       "dataset",
       choices = selected_providers()
@@ -279,7 +279,7 @@ app_server <- function(input, output, session) {
     )
     shinyjs::toggleState("scenario_type", condition = length(saved_params) > 0)
 
-    shiny::updateSelectInput(
+    shiny::updateSelectizeInput(
       session,
       "previous_scenario",
       choices = saved_params
