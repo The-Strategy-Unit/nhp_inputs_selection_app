@@ -113,8 +113,8 @@ ui_body <- function() {
             (years[["baseline_default"]] + 1):years[["horizon_max"]]
           ),
           selected = as.character(years[["horizon_default"]]),
-          options = list(dropdownParent = "body"),
-          width = "100%"
+          width = "100%",
+          options = list(dropdownParent = "body")
         )
       )
     ),
@@ -156,7 +156,8 @@ ui_body <- function() {
             "previous_scenario",
             "Previous Scenario",
             NULL,
-            width = "100%"
+            width = "100%",
+            options = list(dropdownParent = "body")
           )
         ),
         shinyjs::hidden(
@@ -258,8 +259,8 @@ ui_body <- function() {
               "app_version",
               "Model Version",
               choices = app_version_choices(),
-              options = list(dropdownParent = "body"),
-              width = "100%"
+              width = "100%",
+              options = list(dropdownParent = "body")
             )
           ),
           shinyjs::disabled(
@@ -268,8 +269,8 @@ ui_body <- function() {
                 "selected_user",
                 "Selected User",
                 choices = NULL,
-                options = list(dropdownParent = "body"),
-                width = "100%"
+                width = "100%",
+                options = list(dropdownParent = "body")
               )
             )
           )
