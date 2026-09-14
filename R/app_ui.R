@@ -65,14 +65,15 @@ ui_body <- function() {
         class = "bg-primary"
       ),
       bslib::card_body(
-        shiny::selectInput(
+        shiny::selectizeInput(
           "dataset",
           "Provider",
           choices = NULL,
           selectize = TRUE,
-          width = "100%"
+          width = "100%",
+          options = list(dropdownParent = "body")
         ),
-        shiny::selectInput(
+        shiny::selectizeInput(
           "start_year",
           "Baseline Financial Year",
           # TODO: revisit why start year and end year are formatted differently
@@ -81,7 +82,8 @@ ui_body <- function() {
             (years[["baseline_default"]] * 100) +
               ((years[["baseline_default"]] + 1) %% 100)
           ),
-          width = "100%"
+          width = "100%",
+          options = list(dropdownParent = "body")
         ),
         shiny::div(
           id = "default_start_warning",
@@ -151,7 +153,7 @@ ui_body <- function() {
           )
         ),
         shinyjs::hidden(
-          shiny::selectInput(
+          shiny::selectizeInput(
             "previous_scenario",
             "Previous Scenario",
             NULL,
@@ -244,12 +246,13 @@ ui_body <- function() {
             sample(1:100000, 1),
             width = "100%"
           ),
-          shiny::selectInput(
+          shiny::selectizeInput(
             "model_runs",
             "Model Runs",
             choices = c(256, 512, 1024),
             selected = 256,
-            width = "100%"
+            width = "100%",
+            options = list(dropdownParent = "body")
           ),
           shinyjs::disabled(
             shiny::selectizeInput(
