@@ -272,11 +272,6 @@ app_server <- function(input, output, session) {
       dir(pattern = "*.json") |>
       stringr::str_remove("\\.json$")
 
-    shiny::updateRadioButtons(
-      session,
-      "scenario_type",
-      selected = "Create new from scratch"
-    )
     shiny::updateTextInput(
       session,
       "scenario",
@@ -295,7 +290,8 @@ app_server <- function(input, output, session) {
     shiny::updateRadioButtons(
       session,
       "scenario_type",
-      choices = radio_choices
+      choices = radio_choices,
+      selected = "Create new from scratch"
     )
 
     shiny::updateSelectizeInput(
