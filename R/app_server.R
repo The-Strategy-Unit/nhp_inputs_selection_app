@@ -78,6 +78,8 @@ app_server <- function(input, output, session) {
     s <- input$scenario
     f <- params_filename(current_user(), input$dataset, input$scenario)
 
+    # show the naming guidance if we fail to validate
+    withr::defer(shinyjs::show("naming_guidance"))
     shiny::validate(
       shiny::need(
         s != "",
@@ -96,6 +98,9 @@ app_server <- function(input, output, session) {
       )
     )
 
+    # validation succeeded, hide the naming guidance
+    withr::deferred_clear()
+    shinyjs::hide("naming_guidance")
     # scenario is valid, so return TRUE. the validate function will return an error if there are issues
     TRUE
   }) |>
