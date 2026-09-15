@@ -469,10 +469,13 @@ app_server <- function(input, output, session) {
       button_text <- "Start"
     }
 
-    shiny::tags$a(
-      button_text,
-      class = "btn btn-success text-white",
-      href = url
+    htmltools::tags$div(
+      class = "d-flex justify-content-end",
+      htmltools::tags$a(
+        button_text,
+        class = "btn btn-success text-white",
+        href = url
+      )
     )
   }) |>
     shiny::bindEvent(filename(), params_with_inputs())
