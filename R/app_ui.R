@@ -122,17 +122,11 @@ ui_body <- function() {
       fill = FALSE,
       bslib::card_header("Scenario", class = "bg-primary"),
       bslib::card_body(
-        shinyjs::disabled(
-          shiny::radioButtons(
-            "scenario_type",
-            NULL,
-            c(
-              "Create new from scratch",
-              "Create new from existing",
-              "Edit existing"
-            ),
-            inline = TRUE
-          )
+        shiny::radioButtons(
+          "scenario_type",
+          NULL,
+          "Create new from scratch",
+          inline = TRUE
         ),
         shinyjs::hidden(
           shiny::div(

@@ -277,7 +277,21 @@ app_server <- function(input, output, session) {
       "scenario",
       value = ""
     )
-    shinyjs::toggleState("scenario_type", condition = length(saved_params) > 0)
+
+    radio_choices <- c(
+      "Create new from scratch",
+      "Create new from existing",
+      "Edit existing"
+    )
+    if (length(saved_params) == 0) {
+      radio_choices <- radio_choices[[1]]
+    }
+
+    shiny::updateRadioButtons(
+      session,
+      "scenario_type",
+      choices = radio_choices
+    )
 
     shiny::updateSelectizeInput(
       session,
