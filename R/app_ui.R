@@ -344,8 +344,5 @@ ui_theme <- function() {
   bslib::bs_theme(brand = brand) |>
     bslib::bs_add_rules(
       sass::sass_file(app_sys("www/styles.scss"))
-    ) |>
-    bslib::bs_add_variables(
-      "shiny-error-validated-color" = "#DA291C"
     )
 }
