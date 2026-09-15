@@ -78,6 +78,8 @@ app_server <- function(input, output, session) {
     s <- input$scenario
     f <- params_filename(current_user(), input$dataset, input$scenario)
 
+    # show the naming guidance if we fail to validate
+    withr::defer(shinyjs::show("naming_guidance"))
     shiny::validate(
       shiny::need(
         s != "",
@@ -96,6 +98,9 @@ app_server <- function(input, output, session) {
       )
     )
 
+    # validation succeeded, hide the naming guidance
+    withr::deferred_clear()
+    shinyjs::hide("naming_guidance")
     # scenario is valid, so return TRUE. the validate function will return an error if there are issues
     TRUE
   }) |>
@@ -267,17 +272,27 @@ app_server <- function(input, output, session) {
       dir(pattern = "*.json") |>
       stringr::str_remove("\\.json$")
 
-    shiny::updateRadioButtons(
-      session,
-      "scenario_type",
-      selected = "Create new from scratch"
-    )
     shiny::updateTextInput(
       session,
       "scenario",
       value = ""
     )
-    shinyjs::toggleState("scenario_type", condition = length(saved_params) > 0)
+
+    radio_choices <- c(
+      "Create new from scratch",
+      "Create new from existing",
+      "Edit existing"
+    )
+    if (length(saved_params) == 0) {
+      radio_choices <- radio_choices[[1]]
+    }
+
+    shiny::updateRadioButtons(
+      session,
+      "scenario_type",
+      choices = radio_choices,
+      selected = "Create new from scratch"
+    )
 
     shiny::updateSelectizeInput(
       session,
@@ -450,10 +465,13 @@ app_server <- function(input, output, session) {
       button_text <- "Start"
     }
 
-    shiny::tags$a(
-      button_text,
-      class = "btn btn-success text-white",
-      href = url
+    htmltools::tags$div(
+      class = "d-flex justify-content-end",
+      htmltools::tags$a(
+        button_text,
+        class = "btn btn-success text-white",
+        href = url
+      )
     )
   }) |>
     shiny::bindEvent(filename(), params_with_inputs())

@@ -122,17 +122,11 @@ ui_body <- function() {
       fill = FALSE,
       bslib::card_header("Scenario", class = "bg-primary"),
       bslib::card_body(
-        shinyjs::disabled(
-          shiny::radioButtons(
-            "scenario_type",
-            NULL,
-            c(
-              "Create new from scratch",
-              "Create new from existing",
-              "Edit existing"
-            ),
-            inline = TRUE
-          )
+        shiny::radioButtons(
+          "scenario_type",
+          NULL,
+          "Create new from scratch",
+          inline = TRUE
         ),
         shinyjs::hidden(
           shiny::div(
@@ -206,18 +200,14 @@ ui_body <- function() {
           )
         ),
         shiny::textInput("scenario", "Name", width = "100%"),
+        shiny::uiOutput("start_button"),
         shiny::div(
           id = "naming_guidance",
-          style = "margin-top: -5px; margin-bottom: 8px",
           "Please follow",
           shiny::a(
             "the model-run naming guidelines.",
             href = "https://connect.strategyunitwm.nhs.uk/nhp/project_information/user_guide/naming_scenarios.html"
           )
-        ),
-        shiny::div(
-          style = "text-align: right",
-          shiny::uiOutput("start_button")
         )
       )
     ),
