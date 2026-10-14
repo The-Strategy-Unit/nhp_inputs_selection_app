@@ -20,6 +20,7 @@ S3method(upgrade_params,v4.4)
 S3method(upgrade_params,v5.0)
 S3method(upgrade_params,v5.1)
 S3method(upgrade_params,v5.2)
+S3method(upgrade_params,v6.0)
 export(run_app)
 export(upgrade_params)
 importFrom(rlang,
