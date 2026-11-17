@@ -14,6 +14,8 @@ License: MIT + file LICENSE
 Depends:
     R (>= 4.4.0)
 Imports:
+    azkit,
+    AzureAuth,
     brand.yml,
     bslib,
     config,
@@ -21,6 +23,7 @@ Imports:
     glue,
     gt,
     htmltools,
+    httr2,
     jsonlite,
     markdown,
     purrr,
@@ -33,6 +36,8 @@ Imports:
     tibble,
     withr,
     yyjsonr
+Remotes:
+    github::the-strategy-unit/azkit
 Config/roxygen2/version: 8.1.1
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
