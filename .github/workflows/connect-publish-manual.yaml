@@ -76,6 +76,10 @@ jobs:
           CONNECT_ENV_SET_YEAR_HORIZON_MAX: ${{ vars.YEAR_HORIZON_MAX }}
           CONNECT_ENV_SET_YEAR_BASELINE_DEFAULT: ${{ vars.YEAR_BASELINE_DEFAULT }}
           CONNECT_ENV_SET_YEAR_BASELINE_MIN: ${{ vars.YEAR_BASELINE_MIN }}
+          CONNECT_ENV_SET_OPENPLAN_API_URI: ${{ vars.OPENPLAN_API_URI }}
+          CONNECT_ENV_SET_OPENPLAN_API_APP_ID: ${{ vars.OPENPLAN_API_APP_ID }}
+          CONNECT_ENV_SET_AZ_TENANT_ID: ${{ vars.AZ_TENANT_ID }}
+
         with:
           url: ${{ vars.RSCONNECT_URL }}
           api-key: ${{ secrets.RSCONNECT_API_KEY }}
