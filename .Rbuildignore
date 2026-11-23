@@ -29,3 +29,5 @@ $run_dev.*
 
 ^\.Renviron\.example$
 ^\.git-blame-ignore-revs$
+
+^jarl\.toml
