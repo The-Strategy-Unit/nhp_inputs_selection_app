@@ -42,16 +42,50 @@ app_ui <- function(request) {
 
 
 ui_body <- function() {
-  # each of the columns is created in it's own variable
+  # each of the columns is created in its own variable
 
   # left column contains the documentation for this module
-  left_column <- bslib::card(
-    fill = FALSE,
-    shiny::HTML(
-      markdown::mark_html(
-        app_sys("home.md"),
-        output = FALSE,
-        template = FALSE
+  left_column <- shiny::tagList(
+    bslib::card(
+      fill = FALSE,
+      bslib::card_header(
+        "Please Note",
+        class = "bg-primary"
+      ),
+      shiny::HTML(
+        markdown::mark_html(
+          app_sys("please-note.md"),
+          output = FALSE,
+          template = FALSE
+        )
+      )
+    ),
+    bslib::card(
+      fill = FALSE,
+      bslib::card_header(
+        "Instructions",
+        class = "bg-primary"
+      ),
+      shiny::HTML(
+        markdown::mark_html(
+          app_sys("instructions.md"),
+          output = FALSE,
+          template = FALSE
+        )
+      )
+    ),
+    bslib::card(
+      fill = FALSE,
+      bslib::card_header(
+        "Evidence Map",
+        class = "bg-primary"
+      ),
+      shiny::HTML(
+        markdown::mark_html(
+          app_sys("evidence-map.md"),
+          output = FALSE,
+          template = FALSE
+        )
       )
     )
   )
@@ -232,13 +266,13 @@ ui_body <- function() {
           class = "collapse",
           shiny::numericInput(
             "seed",
-            "Seed",
+            "Seed (random default or paste a value from a prior run)",
             sample(1:100000, 1),
             width = "100%"
           ),
           shiny::selectizeInput(
             "model_runs",
-            "Model Runs",
+            "Number of model runs (Monte-Carlo simulations)",
             choices = c(256, 512, 1024),
             selected = 256,
             width = "100%",
@@ -247,7 +281,7 @@ ui_body <- function() {
           shinyjs::disabled(
             shiny::selectizeInput(
               "app_version",
-              "Model Version",
+              "Model version",
               choices = app_version_choices(),
               width = "100%",
               options = list(dropdownParent = "body")
@@ -257,7 +291,7 @@ ui_body <- function() {
             shinyjs::hidden(
               shiny::selectizeInput(
                 "selected_user",
-                "Selected User",
+                "Selected user",
                 choices = NULL,
                 width = "100%",
                 options = list(dropdownParent = "body")
@@ -328,6 +362,15 @@ ui_body <- function() {
     bslib::page_fluid(
       title = "OpenPlan Hospital Demand Model: Inputs Selection",
       theme = theme,
+      # bslib::layout_columns(
+      #   col_widths = bslib::breakpoints(
+      #     xs = c(12, 12, 12),
+      #     lg = c(4, 4, 4)
+      #   ),
+      #   left_column,
+      #   middle_column,
+      #   right_column
+      # )
       bslib::layout_columns(
         col_widths = bslib::breakpoints(
           xs = c(12, 12, 12),
