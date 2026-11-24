@@ -294,13 +294,20 @@ ui_body <- function() {
           `data-bs-target` = "#peers-list-collapse",
           `aria-expanded` = "false",
           `aria-controls` = "peers-list-collapse",
-          "Peers (from NHS Trust Peer Finder Tool)"
+          "Peers"
         ),
         class = "bg-primary"
       ),
       bslib::card_body(
         id = "peers-list-collapse",
         class = "collapse",
+        shiny::HTML(
+          markdown::mark_html(
+            app_sys("peers.md"),
+            output = FALSE,
+            template = FALSE
+          )
+        ),
         shinycssloaders::withSpinner(
           shiny::htmlOutput("peers_list")
         )
