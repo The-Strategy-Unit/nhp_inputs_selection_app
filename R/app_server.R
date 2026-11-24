@@ -1,8 +1,6 @@
 # nolint next: cyclocomp_linter.
 app_server <- function(input, output, session) {
   # static data ----
-  peers <- readRDS(app_sys("peers.Rds"))
-
   providers <- yyjsonr::read_geojson_file(app_sys(
     "www/provider_locations.geojson"
   )) |>
@@ -52,16 +50,15 @@ app_server <- function(input, output, session) {
 
   # when the user changes the provider (dataset), get the list of peers for that provider
   selected_peers <- shiny::reactive({
-    p <- shiny::req(input$dataset)
+    ds <- shiny::req(input$dataset)
+
+    peers <- get_peers(ds)
 
     providers |>
-      dplyr::semi_join(
-        peers |>
-          dplyr::filter(.data$procode == p),
-        by = c("org_id" = "peer")
-      ) |>
-      dplyr::mutate(is_peer = .data$org_id != p)
+      dplyr::filter(.data$org_id %in% c(ds, peers)) |>
+      dplyr::mutate(is_peer = .data$org_id != ds)
   }) |>
+    shiny::bindCache(input$dataset) |>
     shiny::bindEvent(input$dataset)
 
   shiny::observe({
