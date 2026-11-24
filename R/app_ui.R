@@ -98,10 +98,10 @@ ui_body <- function() {
           shiny::a(
             "request your detailed baseline data",
             href = paste0(
-              "mailto:mlcsu.su.datascience@nhs.net?subject=NHP request: ",
+              "mailto:mlcsu.su.datascience@nhs.net?subject=OpenPlan request: ",
               "detailed baseline data&body=I am requesting the detailed ",
               "baseline data for [scheme name] for financial year [YYYY/YY], as ",
-              "instructed in the NHP inputs app."
+              "instructed in the OpenPlan Hospital Demand Model inputs app."
             )
           ),
           "and review it before you run the model."
@@ -312,7 +312,10 @@ ui_body <- function() {
     class = "navbar navbar-expand-lg bg-primary",
     htmltools::tags$div(
       class = "navbar-brand",
-      htmltools::h1("NHP Model Inputs", id = "page-title")
+      htmltools::h1(
+        "OpenPlan Hospital Demand Model: Inputs Selection",
+        id = "page-title"
+      )
     )
   )
 
@@ -323,7 +326,7 @@ ui_body <- function() {
     navbar,
 
     bslib::page_fluid(
-      title = "NHP: Inputs Selection",
+      title = "OpenPlan Hospital Demand Model: Inputs Selection",
       theme = theme,
       bslib::layout_columns(
         col_widths = bslib::breakpoints(
