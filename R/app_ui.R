@@ -135,7 +135,7 @@ ui_body <- function() {
               "mailto:mlcsu.su.datascience@nhs.net?subject=OpenPlan request: ",
               "detailed baseline data&body=I am requesting the detailed ",
               "baseline data for [scheme name] for financial year [YYYY/YY], as ",
-              "instructed in the OpenPlan Hospital Demand Model inputs app."
+              "instructed in the OpenPlan hospital demand model inputs app."
             )
           ),
           "and review it before you run the model."
@@ -166,11 +166,13 @@ ui_body <- function() {
           shiny::div(
             id = "upgrade_warning",
             style = "margin-bottom: 1rem;",
-            shiny::icon("circle-info"),
-            "Editing an existing scenario will automatically upgrade it to",
-            "the latest model version. See",
+            shiny::icon("triangle-exclamation"),
+            "Editing an existing scenario will automatically upgrade it for",
+            "compatibility with the latest model version. Beware: this may",
+            "delete or overwrite elements of the existing scenario file. Check",
+            "your parameter selections after you click the 'Start' button. See",
             shiny::a(
-              "the model updates page",
+              "the OpenPlan hospital demand model documentation",
               href = paste0(
                 "https://connect.strategyunitwm.nhs.uk/nhp/project_information/",
                 "project_plan_and_summary/model_updates.html"
