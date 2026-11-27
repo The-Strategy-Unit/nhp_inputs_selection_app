@@ -198,3 +198,24 @@ upgrade_params.v6.0 <- function(p) {
   class(p) <- p$app_version <- "v6.1"
   upgrade_params(p)
 }
+
+#' @exportS3Method
+upgrade_params.v6.1 <- function(p) {
+  # remove any baseline adjustment values
+  p[["baseline_adjustment"]] <- list(ip = NULL, op = NULL, aae = NULL)
+
+  # remove any expat/repat values
+  p[["expat"]] <- list(ip = NULL, op = NULL, aae = NULL)
+  p[["repat_local"]] <- list(ip = NULL, op = NULL, aae = NULL)
+  p[["repat_nonlocal"]] <- list(ip = NULL, op = NULL, aae = NULL)
+
+  # replace demograhic factor with demographic adjustment
+  v <- p[["demographic_factors"]][["variant_probabilities"]]
+  p[["demographic_adjustment"]] <- list(
+    "variant" = names(v)[[1]]
+  )
+  p[["demographic_factors"]] <- NULL
+
+  class(p) <- p$app_version <- "v6.2"
+  upgrade_params(p)
+}

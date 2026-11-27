@@ -7,7 +7,7 @@
   "start_year": 2024,
   "end_year": 2041,
   "app_version": null,
-  "demographic_factors": {},
+  "demographic_adjustment": {},
   "health_status_adjustment": true,
   "inequalities": {},
   "expat": {
@@ -39,18 +39,42 @@
     "value-type": "year-on-year-growth",
     "values": {
       "aae": {
-        "ambulance": [1.0121, 1.0142],
-        "walk-in": [1.0121, 1.0142]
+        "ambulance": [
+          1.0121,
+          1.0142
+        ],
+        "walk-in": [
+          1.0121,
+          1.0142
+        ]
       },
       "ip": {
-        "elective": [1.0053, 1.0071],
-        "maternity": [1, 1],
-        "non-elective": [0.9955, 1.0017]
+        "elective": [
+          1.0053,
+          1.0071
+        ],
+        "maternity": [
+          1,
+          1
+        ],
+        "non-elective": [
+          0.9955,
+          1.0017
+        ]
       },
       "op": {
-        "first": [1.0228, 1.027],
-        "followup": [1.0228, 1.027],
-        "procedure": [1.0228, 1.027]
+        "first": [
+          1.0228,
+          1.027
+        ],
+        "followup": [
+          1.0228,
+          1.027
+        ],
+        "procedure": [
+          1.0228,
+          1.027
+        ]
       }
     }
   },
